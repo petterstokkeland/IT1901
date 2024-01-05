@@ -1,0 +1,53 @@
+@startuml ClassDiagramRestapi 
+header Classdiagram for restapi
+
+    class RestapiApplication {
+        + main(args : String[]) : void
+    }
+
+    class RestapiConfig {
+    + jsonController() : JsonController
+    + expenseService() : ExpenseService
+    + customRestTemplate() : RestTemplate
+    - createGson() : Gson
+    - createGsonHttpMessageConverter(gson : Gson) : GsonHttpMessageConverter
+}
+
+class RestapiController {
+    - restapiService : RestapiService
+
+    + RestapiController(restapiService : RestapiService)
+    + createUser(user : User) : ResponseEntity<User>
+    + authenticateUser(username : String, password : String) : ResponseEntity<User>
+    + getUserByUsername(username : String) : User
+    + updateJsonFile(username : String, user : User) : void
+    + getAllExpensesForUsername(username : String) : List<Expense>
+    + addExpenseForUser(username : String, expense : Expense) : void
+    + deleteExpenseForUser(username : String, expense : Expense) : User
+    + getTotalExpensesForUser(expenses : List<Expense>) : double
+    + getCategoriesForUser(username : String) : Set<String>
+    + filterExpensesForUser(username : String, category : String, start : LocalDate, end : LocalDate) : ResponseEntity<List<Expense>>
+}
+class RestapiService {
+    - jsonController : JsonController
+    - expenseService : ExpenseService
+    + RestapiService(jsonController : JsonController, expenseService : ExpenseService)
+    + createUserIfNotExists(user : User) : User
+    + authenticateUser(username : String, password : String) : User
+    + getAllUsers() : List<User>
+    + getUserByUsername(username : String) : User
+    + createNewExpense(username : String, expense : Expense) : void
+    + getAllExpensesForUser(username : String) : List<Expense>
+    + getCategoriesForUser(username : String) : Set<String>
+    + deleteExpenseForUser(username : String, expense : Expense) : User
+    + saveFile(user : User) : void
+    + filterExpensesForUser(username : String, selectedCategory : String, start : LocalDate, end : LocalDate) : List<Expense>
+    + getTotalExpensesValueOfList(expenses : List<Expense>) : double
+    - findExpense(user : User, expense : Expense) : Expense
+}
+
+
+RestapiController "1" -- "1" RestapiService
+
+
+@enduml

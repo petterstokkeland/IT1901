@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+   prefHeight="501.0" prefWidth="708.0" xmlns="http://javafx.com/javafx/17"
+   xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.CreateNewUserController">
+   <children>
+      <Text fill="#355e3b" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0"
+         text="Register New User" textAlignment="CENTER" wrappingWidth="708">
+         <font>
+            <Font size="35.0" />
+         </font>
+      </Text>
+      <TextField fx:id="username" layoutX="276.0" layoutY="151.0" prefHeight="27.0"
+         prefWidth="160.0" promptText="Username"
+         style="-fx-background-color: transparent; -fx-border-color: #355E3B; -fx-border-width: 0px 0px 2px 0px;" />
+      <PasswordField fx:id="password" layoutX="276.0" layoutY="195.0" prefHeight="26.0"
+         prefWidth="160.0" promptText="Password"
+         style="-fx-background-color: transparent; -fx-border-width: 0px 0px 2px 0px; -fx-border-color: #355E3B;" />
+      <Button fx:id="registerNewUser" layoutX="276.0" layoutY="244.0" mnemonicParsing="false"
+         onAction="#handleRegisterNewUser" prefHeight="37.0" prefWidth="160.0"
+         style="-fx-background-color: #355E3B;" text="Register" textFill="WHITE">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Button>
+      <Button fx:id="backToLogIn" layoutX="36.0" layoutY="433.0" mnemonicParsing="false"
+         onAction="#handleBackToLogIn" prefHeight="37.0" prefWidth="64.0"
+         style="-fx-background-color: #355E3B;" text="Back" textFill="WHITE">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

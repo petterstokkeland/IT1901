@@ -1,0 +1,138 @@
+@startuml ClassDiagramUi
+header Classdiagram for ui
+    skinparam classArrowFontSize 18
+    class CreateNewUserController {
+        + void initialize()
+        + void handleBackToLogIn(ActionEvent event)
+        + void handleRegisterNewUser(ActionEvent event)
+    }
+
+    class ExpenseHistoryController {
+        # void updateTotalPriceLabel(List<Expense> expenses)
+        - void updateCategoryComboBox(Set<String> categories)
+        + void initialize()
+        + void loadUserAndData(User userIn)
+        + void handleClearFilter(ActionEvent event)
+        + void handleBack(ActionEvent event)
+        + void handleShow(ActionEvent event)
+        - void addButtonToTable()
+    }
+
+    class ExpenseHistoryController::DescriptionCell {
+        # void updateItem(String item, boolean empty)
+    }
+
+    class ExpenseHistoryController::CategoryListCell {
+        # void updateItem(String item, boolean empty)
+    }
+
+    class HomeController {
+        + void initialize()
+        # void updateItem(String item, boolean empty)
+        + void loadUserAndData(User userIn)
+        + void handleNewExpense(ActionEvent event)
+        + void handleSeeHistory(ActionEvent event)
+        + void handleLogOut(ActionEvent event)
+    }
+
+    class HomeController::DescriptionCell {
+        # void updateItem(String item, boolean empty)
+    }
+
+    class LogInController {
+        + void initialize()
+        + void handleRegisterNewUser(ActionEvent event)
+        + void handleLogIn(ActionEvent event)
+    }
+
+    class NewExpenseController {
+        + void initialize()
+        - void clearInputFields()
+        + void loadUserAndData(User userIn)
+        + void handleAdd(ActionEvent event)
+        + void handleBackToHome(ActionEvent event)
+    }
+
+    class AlertManager {
+        - AltertManager()
+        + void showErrorMessage(String header, String message)
+        + void showInfoMessage(String header, String message)
+        + Optional<ButtonType> showConfirmationMessage(String title, String message)
+        - void showAlert(AlertType alertType, String title, String header, String message)
+    }
+
+    interface Controller {
+        + void setPrimaryStage(Stage primaryStage)
+        + Stage getPrimaryStage()
+    }
+
+    abstract AbstractUiController {
+        - Stage primaryStage
+        # ApiClient apiClient
+        # User user
+        + void setPrimaryStage(Stage primaryStage)
+        + void setFilePath(String filePath)
+        + Stage getPrimaryStage()
+    }
+
+
+    class ApiClient {
+        - String BASE_URL
+        - String USER_URL
+        - Gson gson
+        - RestTemplate customRestTemplate
+        - Gson createGson()
+        - GsonHttpMessageConverter createGsonHttpMessageConverter(Gson gson)
+        - RestTemplate customRestTemplate()
+        - HttpHeaders getJsonHeaders()
+        - ApiClient()
+        + void setFilePath(String filePath)
+        + User getUserByUsername(String username)
+        + User createUser(String username, String password)
+        + User logInUser(String username, String password)
+        + void addExpenseForUser(String username, HashMap<String, String> expenseCreditentials)
+        + User deleteExpenseForUser(String username, Expense expense)
+        + List<Expense> getExpensesFromUser(User user)
+        + Set<String> getCategoriesForUser(User user)
+        + List<Expense> filterExpensesForUser(String username, String selectedCategory, LocalDate start, LocalDate end)
+        + ListAndValueContainer getFilteredExpensesAndValue(String username, String selectedCategory, LocalDate start, LocalDate end)
+    }
+
+    class ApiClient::ExpenseListTypeReference {
+
+    }
+
+    class ApiClient::StringSetTypeReference {
+
+    }
+
+    class MoneySpenderApp {
+        + void start(Stage stage)
+        + void main(String[] args)
+    }
+    
+
+AbstractUiController ..|> Controller
+AbstractUiController --> "1" ApiClient 
+CreateNewUserController --|> AbstractUiController
+CreateNewUserController --> HomeController
+CreateNewUserController --> AlertManager
+ExpenseHistoryController --|> AbstractUiController
+ExpenseHistoryController -- HomeController 
+ExpenseHistoryController --> AlertManager 
+ExpenseHistoryController +-- ExpenseHistoryController::DescriptionCell
+ExpenseHistoryController +-- ExpenseHistoryController::CategoryListCell
+HomeController --|> AbstractUiController 
+HomeController -- NewExpenseController
+HomeController -- LogInController
+HomeController +-- HomeController::DescriptionCell
+LogInController --|> AbstractUiController 
+LogInController --> AlertManager 
+LogInController --> CreateNewUserController
+MoneySpenderApp --> LogInController 
+NewExpenseController --> AlertManager
+ApiClient +-- ApiClient::ExpenseListTypeReference
+ApiClient +-- ApiClient::StringSetTypeReference
+
+
+@enduml

@@ -1,0 +1,51 @@
+@startuml ClassDiagramPersistence 
+header Classdiagram for Persistence
+
+    class JsonController {
+        -Path filePath
+        -Gson gson 
+        +JsonController(file: String)
+        +Path()
+        +void saveNewUSer(user: User)
+        +void setFilepath(user: String)
+        +List<User> readUserFromJson()
+        +boolean checkIfUserNameExist(username: String)
+        +boolean checkIfPasswordIsCorrect(username: String, password: String)
+        +User getUser(username: String)
+        -User getUserFromList(username: String, users: List<User>)
+    }
+
+    class ExpenseHandlerAdapter {
+    + serialize(src : ExpenseHandler, typeOfSrc : Type, context : JsonSerializationContext) : JsonElement
+    + deserialize(json : JsonElement, typeOfT : Type, context : JsonDeserializationContext) : ExpenseHandler
+    }
+
+    interface JsonSerializer<ExpenseHandler> {
+    }
+
+    interface JsonDeserializer<ExpenseHandler> {
+    }
+
+    ExpenseHandlerAdapter ..|> JsonSerializer : implements
+    ExpenseHandlerAdapter ..|> JsonDeserializer : implements
+
+
+
+    class ExpenseHandlerImplTypeAdapter {
+    - elementAdapter : TypeAdapter<JsonElement>
+    + write(out : JsonWriter, value : ExpenseHandlerImpl) : void
+    + read(in : JsonReader) : ExpenseHandlerImpl
+    }
+
+    class TypeAdapter<ExpenseHandlerImpl> {
+    }
+
+    ExpenseHandlerImplTypeAdapter --|> TypeAdapter : extends
+
+
+
+
+JsonController  --  ExpenseHandlerAdapter
+JsonController  --  ExpenseHandlerImplTypeAdapter
+
+@enduml

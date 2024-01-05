@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch modules-template - multi-module, multi-package ",
+            "request": "launch",
+            "mainClass": "moneySpender.ui/ui.MoneySpenderApp",
+            "projectName": "ui",
+            "vmArgs": ["--add-opens", "moneyspender.ui/ui=ALL-UNNAMED", "--add-exports", "javafx.graphics/com.sun.javafx.application=ALL-UNNAMED"]
+
+        }
+    ]
+}

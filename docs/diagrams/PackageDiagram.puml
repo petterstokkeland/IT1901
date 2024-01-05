@@ -1,0 +1,64 @@
+@startuml PackageDiagram
+
+' Styling
+skinparam packageStyle rectangle
+skinparam rectangle {
+    BackgroundColor PaleGreen
+    BorderColor Black
+    BorderThickness 2
+}
+
+left to right direction
+
+package "ui module\n[Java, FXML]" as ui {
+    ' Interfaces & Abstract Classes
+    interface «Controller»
+    abstract «AbstractUiController»
+
+    ' Concrete Classes
+    class CreateNewUserController
+    class ExpenseHistoryController
+    class HomeController
+    class LogInController
+    class NewExpenseController
+    class AlertManager
+    class MoneySpenderApp
+    class ApiClient
+}
+
+package "core module\n[Java]" as core {
+    ' Interfaces
+    interface «ExpenseHandler»
+    interface ExpenseFilterer
+    interface «ExpenseCalculator»
+
+    ' Concrete Classes
+    class User
+    class Expense
+    class ExpenseService
+    class ExpenseHandlerImp
+    class ExpenseFiltererImpl
+    class ExpenseCalculatorImpl
+    class ListAndValueContainer
+}
+
+package "persistence module\n[Java, Gson]" as persitence {
+    class JsonController
+    class ExpenseHandlerAdapter
+    class ExpenseHandlerImpTypeAdapter
+}
+
+package "restapi module\n[Java, SpringFramework]" as restapi {
+    class RestapiApplication
+    class RestapiController
+    class RestapiService
+    class RestapiConfig
+}
+
+' Relationships
+ui --> restapi: Uses
+restapi --> persitence: Uses
+restapi --> core: Uses
+
+
+@enduml

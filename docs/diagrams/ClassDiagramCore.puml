@@ -1,0 +1,133 @@
+@startuml ClassDiagramCore
+header Classdiagram for core
+skinparam classArrowFontSize 20
+    class User {
+        - String username
+        - String password
+        - ExpenseHandlerImpl expenseHandler
+        + User()
+        + User(String username, String password, List<Expense> expenses)
+        + User(User user)
+        + User(String username, String password)
+        + String getUsername()
+        + void setUsername(String username)
+        + String getPassword()
+        + void setPassword(String password)
+        + ExpenseHandler getExpenseHandler()
+    }
+
+    class Expense {
+        - String description
+        - String category
+        - String date
+        - double price
+        - DateTimeFormatter DATE_FORMATTER
+        + Expense()
+        + Expense(LocalDate date, String category, double price, String description)
+        + Expense(String date, String chosenCategory, double priceValue, String description)
+        + String getDate()
+        + void setDate(LocalDate date)
+        + void setDateString(String date)
+        + double getPrice()
+        + void setPrice(double price)
+        + String getCategory()
+        + voi setCategory(String category)
+        + String getDescription()
+        + void setDescription(String description)
+        + String toString()
+        + boolean equals(Object obj)
+        + int hashCode()
+    }
+
+    class ExpenseService {
+        - ExpenseFilterer expenseFilterer
+        - ExpenseCalculator expenseCalculator
+        + ExpenseService()
+        + ExpenseService(ExpenseFilterer expenseFilterer, ExpenseCalculator expenseCalculator)
+        + void setExpenseCalcuator(ExpenseCalculator expenseCalculatorImpl)
+        + void setExpenseFilterer(ExpenseFilterer expenseFilterer)
+        + void addExpenseForUser(User user, Expense expense)
+        + boolean removeExpenseForUser(User user, Expense selectedItem)
+        + List<Expense> filterExpensesForUser(User user, String category, LocalDate startDate, LocalDate endDate)
+        + List<Expense> getAllExpensesForUser(User user)
+        + List<Expense> getExpensesCompared(User user, Comparator<Expense> comparator)
+        + Set<String> getCategoriesForUser(User user)
+        + double calculateTotalExpenseValueForUser(User user)
+        + double calculateTotalExpenseValueForList(List<Expense> expenses)
+        + Expense findExpense(User user, Expense expense)
+    }
+
+    interface ExpenseHandler {
+        + void addExpense(Expense expense)
+        + boolean removeExpense(Expense expense)
+        + void updateExpense(Expense oldExpense, Expense newExpense)
+        + List<Expense> getAllExpenses()
+        + Set<String> getCategories()
+    }
+
+    interface ExpenseFilterer {
+        + List<Expense> filterExpenses(List<Expense> expenses, LocalDate startDate, LocalDate endDate, String category)
+        + List<Expense> getExpensesCompared(List<Expense> expenses, Comparator<Expense> comparator)
+    }
+
+    class ExpenseFiltererImpl {
+        - DATE_FORMATTER DateTimeFormatter
+        + void validDates(LocalDate startDate, LocalDate endDate)
+        + List<Expense> filterExpensesByDate(List<Expense> expenses, LocalDate startDate, LocalDate endDate)
+        + List<Expense> filterExpenses(List<Expense> expenses, LocalDate startDate, LocalDate endDate, String category)
+        + List<Expense> getExpensesCompared(List<Expense> expenses, Comparator<Expense> comparator)
+    }
+
+    interface ExpenseCalculator {
+        + double getTotalExpenseValueOfList(List<Expense> expenses)
+    }
+
+    class ExpenseCalculatorImpl {
+        + double getTotalExpenseValueOfList(List<Expense> expenses)
+    }
+
+    class ExpenseHandlerImpl {
+        - List<Expense> expenses
+        - Set<String> categories
+        + ExpenseHandlerImpl()
+        + ExpenseHandlerImpl(List<Expense> expenses)
+        + ExpenseHandlerImpl(List<Expense> expenses, Set<String> categories)
+        + void addExpense(Expense expense)
+        + boolean removeExpense(Expense expense)
+        + void updateExpense(Expense oldExpense, Expense newExpense)
+        + List<Expense> getAllExpenses()
+        + Set<String> getCategories()
+        + void loadCategories()
+        + int getExpenseCount()
+        + int getCategoryCount()
+        + boolean checkIfCategoryUsed(Expense expenseToCheck)
+    }
+
+    class ListAndValueContainer {
+        - List<Expense> expenses
+        - double total
+        + ListAndValueContainer()
+        + ListAndValueContainer(List<Expense> expenses, double total)
+        + void setExpenses(List<Expense> expenses)
+        + void setTotal(double total)
+        + List<Expense> getExpenses()
+        + double getTotal()
+    }
+
+
+
+ExpenseCalculatorImpl ..|> ExpenseCalculator 
+ExpenseCalculatorImpl --> Expense 
+ExpenseFiltererImpl ..|> ExpenseFilterer
+ExpenseFiltererImpl --> Expense 
+ExpenseHandlerImpl ..|> ExpenseHandler
+ExpenseHandlerImpl --> "n" Expense
+ExpenseService --> User
+ExpenseService --> Expense
+ExpenseService --> "1" ExpenseFilterer
+ExpenseService --> "1" ExpenseCalculator
+User --> "1" ExpenseHandler
+User --> Expense 
+ListAndValueContainer --> "n" Expense 
+
+@enduml

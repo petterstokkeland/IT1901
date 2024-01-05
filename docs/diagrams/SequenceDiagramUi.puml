@@ -1,0 +1,61 @@
+@startuml SequenceDiagramUi
+header Case: adding new expense
+actor User
+participant NewExpenseController
+participant ApiClient
+participant RestapiController
+participant RestapiService
+participant ExpenseService
+participant JsonController
+participant ExpenseService
+
+
+
+User -> NewExpenseController: Clicks 'Add New Expense'
+NewExpenseController -> ApiClient: handleAdd(actionEvent)
+ApiClient -> RestapiController: POST /moneyspender/expense/add/{username}
+
+RestapiController -> RestapiService: createNewExpense(username, credentials)
+
+RestapiService -> JsonController: getUserByUsername(username)
+JsonController --> RestapiService: User
+RestapiService --> RestapiService: validateCategory(String category, String dropDownCategory)
+
+alt Error with category
+    RestapiService --> RestapiController: IllegalArgumentException
+    RestapiController --> ApiClient: Bad request
+    ApiClient --> NewExpenseController: IllegalArgumentException
+    NewExpenseController --> User: Display error message
+end 
+RestapiService --> RestapiService: convertPrice(String price) 
+alt Error with price
+    RestapiService --> RestapiController: IllegalArgumentException*
+    RestapiService --> RestapiController: NumberFormatException
+    RestapiController --> ApiClient: Bad request*
+    RestapiController --> ApiClient: NOT_ACCEPTABLE
+    ApiClient --> NewExpenseController: IllegalArgumentException*
+    ApiClient --> NewExpenseController: NumberFormatException
+    NewExpenseController --> User: Display error message
+end
+
+RestapiService -> ExpenseService: addExpenseForUser(user, new Expense(date, chosenCategory, priceValue, description))
+
+ExpenseService --> RestapiService: Expense added successfully
+RestapiService -> JsonController: saveNewUserToJson(User user)
+
+alt Error with saving user 
+    JsonController --> RestapiService: IOException
+    RestapiService --> RestapiController: IOException
+    RestapiController --> ApiClient: EXCEPTION_FAILED
+    ApiClient --> NewExpenseController: IOException
+    NewExpenseController --> User: Display error message
+end
+
+JsonController --> RestapiService: User saved
+RestapiService --> RestapiController: User
+RestapiController --> ApiClient: HTTP Response OK
+ApiClient --> NewExpenseController: User 
+
+NewExpenseController --> User: Display success message
+
+@enduml

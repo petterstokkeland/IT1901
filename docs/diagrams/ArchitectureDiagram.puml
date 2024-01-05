@@ -1,0 +1,44 @@
+@startuml
+
+header Architecture diagram for MoneySpender
+
+together {
+component ui {
+    package moneySpender.ui
+    package moneySpender.ui.ApiClient
+}
+
+moneySpender.ui.ApiClient ..> HTTP : use
+moneySpender.ui ..> moneySpender.ui.ApiClient
+
+}
+
+cloud restapi {
+    component restapi {
+        package moneySpender.restapi{
+        }
+
+    }
+    
+}
+component core {
+    package moneySpender.core
+    package moneySpender.core
+}
+
+database "Database" {
+  component json {
+    }
+}
+
+component persistence{
+    package moneySpender.persistence
+
+}
+persistence ..> json : gson
+restapi .. persistence
+core <.. restapi
+core <.. ui
+
+HTTP .. restapi 
+@enduml

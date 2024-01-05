@@ -1,0 +1,177 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>ui</artifactId>
+
+    <parent>
+        <groupId>it1901</groupId>
+        <artifactId>parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>it1901</groupId>
+            <artifactId>core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>it1901</groupId>
+            <artifactId>persistence</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Add Mockito for testing -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.12.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- javafx -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>17.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>17.0.8</version>
+        </dependency>
+
+        <!-- junit testing with jupiter -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+        </dependency>
+
+        <!-- test javafx with TextFX -->
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-core</artifactId>
+            <version>4.0.16-alpha</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <version>4.0.16-alpha</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Maven Compiler Plugin: Configures the Java compiler version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <!-- Configuration for the compiler can be added here if needed -->
+                </configuration>
+            </plugin>
+
+            <!-- Maven Checkstyle Plugin: Runs Checkstyle for code quality checks -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+
+            <!-- SpotBugs Maven Plugin: Runs SpotBugs for static code analysis -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- JaCoCo Maven Plugin: Generates code coverage reports -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <propertyName>jaCoCoArgLine</propertyName>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Surefire Plugin: Executes unit tests during the build process -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <skipTests>${skipTests}</skipTests>
+                    <argLine>
+                        @{jaCoCoArgLine}
+                        --add-opens moneySpender.ui/ui=ALL-UNNAMED --add-exports
+                        javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                    </argLine>
+                </configuration>
+            </plugin>
+
+            <!-- javafx-maven-plugin -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>moneySpender.ui/ui.MoneySpenderApp</mainClass>
+                    <!-- rest of options are for jlink -->
+                    <compress>2</compress>
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <stripDebug>true</stripDebug>
+                    <noManPages>true</noManPages>
+                    <launcher>moneySpender</launcher>
+                    <jlinkImageName>moneySpender</jlinkImageName>
+                    <jlinkZipName>moneySpender</jlinkZipName>
+                </configuration>
+            </plugin>
+
+            <!-- config below taken from https://dev.to/cherrychain/javafx-jlink-and-jpackage-h9 -->
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <configuration>
+                    <name>moneySpender</name>
+                    <appVersion>1.0.0</appVersion>
+                    <vendor>it1901</vendor>
+                    <destination>target/dist</destination>
+                    <module>moneySpender.ui/ui.MoneySpenderApp</module>
+                    <runtimeImage>target/moneySpender</runtimeImage>
+                    <javaOptions>
+                        <option>-Dfile.encoding=UTF-8</option>
+                    </javaOptions>
+                    <!-- linux options -->
+                    <linuxShortcut>true</linuxShortcut>
+                    <linuxMenuGroup>moneySpender</linuxMenuGroup>
+
+                    <!-- windows options -->
+                    <winDirChooser>true</winDirChooser>
+                    <winShortcut>true</winShortcut>
+                    <winMenu>true</winMenu>
+                    <winMenuGroup>moneySpender</winMenuGroup>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
